@@ -33,7 +33,7 @@ async function main() {
 
     if (core.getInput('changed')) {
         ARGS = CHANGED_ARGS;
-        ARGS.push(getChangedFiles());
+        ARGS.push(await getChangedFiles());
     }
     else {
         ARGS = ALL_ARGS;
