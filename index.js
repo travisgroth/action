@@ -19,12 +19,11 @@ async function getChangedFiles() {
 
     let changedFiles = '';
 
-    const options = { silent: true };
+    const options = { silent: false };
     options.listeners = {
         stdout: (data) => {
             changedFiles += data.toString();
         },
-        stderr: (data) => { },
     };
 
     await exec.exec('git', ['diff', 'HEAD^1', '--name-only'], options);
