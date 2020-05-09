@@ -10,17 +10,26 @@ const CHANGED_ARGS = [
     'run', '--show-diff-on-failure', '--color=always', '--files'
 ];
 
-const GET_CHANGED_FILES = [
-    'git', 'diff', 'HEAD^1', '--name-only'
-];
-
 
 function addToken(url, token) {
     return url.replace(/^https:\/\//, `https://x-access-token:${token}@`)
 }
 
 async function getChangedFiles() {
-    return await exec.exec(GET_CHANGED_FILES)
+
+    let changedFiles = '';
+
+    const options = { silent: true };
+    options.listeners = {
+        stdout: (data) => {
+            changedFiles += data.toString();
+        },
+        stderr: (data) => { },
+    };
+
+    await exec.exec('git', ['diff', 'HEAD^1', '--name-only'], options);
+
+    return changedFiles;
 }
 
 async function main() {
@@ -33,7 +42,8 @@ async function main() {
 
     if (core.getInput('changed')) {
         ARGS = CHANGED_ARGS;
-        ARGS.push(await getChangedFiles());
+        fileList = await getChangedFiles();
+        ARGS.push(fileList);
     }
     else {
         ARGS = ALL_ARGS;
