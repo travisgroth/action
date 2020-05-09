@@ -19,7 +19,7 @@ async function getChangedFiles() {
 
     let changedFiles = '';
 
-    const options = { silent: false };
+    const options = { silent: true };
     options.listeners = {
         stdout: (data) => {
             changedFiles += data.toString();
